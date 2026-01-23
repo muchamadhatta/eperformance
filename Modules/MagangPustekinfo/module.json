@@ -1,0 +1,15 @@
+{
+    "name": "MagangPustekinfo",
+    "alias": "magangpustekinfo",
+    "description": "Module untuk manajemen magang dan PKL Pustekinfo",
+    "keywords": [
+        "magang",
+        "pkl",
+        "internship"
+    ],
+    "priority": 0,
+    "providers": [
+        "Modules\\MagangPustekinfo\\App\\Providers\\MagangPustekinfoServiceProvider"
+    ],
+    "files": []
+}

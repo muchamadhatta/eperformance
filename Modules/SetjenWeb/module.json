@@ -1,0 +1,11 @@
+{
+    "name": "SetjenWeb",
+    "alias": "setjenweb",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SetjenWeb\\App\\Providers\\SetjenWebServiceProvider"
+    ],
+    "files": []
+}

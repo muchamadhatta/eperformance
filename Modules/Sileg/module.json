@@ -1,0 +1,11 @@
+{
+    "name": "Sileg",
+    "alias": "sileg",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Sileg\\App\\Providers\\SilegServiceProvider"
+    ],
+    "files": []
+}
