@@ -13,7 +13,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('theme/admin-dashbyte/dist/assets/img/favicon.png') }}">
 
-    <title>E-PERFORMANCE | DPR RI</title>
+    <title>ePerformance | DPR RI</title>
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/remixicon/fonts/remixicon.css') }}">

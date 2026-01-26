@@ -15,7 +15,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('theme/admin-dashbyte/dist/assets/img/favicon.png') }}">
 
-    <title>PUSTEKINFO INTERNSHIP | DPR RI</title>
+    <title>Pustekinfo Internship | DPR RI</title>
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/remixicon/fonts/remixicon.css') }}">
