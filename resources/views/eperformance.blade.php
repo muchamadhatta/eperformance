@@ -17,31 +17,227 @@
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/remixicon/fonts/remixicon.css') }}">
-    <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/apexcharts/apexcharts.css') }}">
-
-    <!-- Text Editor CSS -->
-    <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/quill/quill.core.css') }}">
-    <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/quill/quill.snow.css') }}">
-    <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/quill/quill.bubble.css') }}">
+    <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/bootstrap-icons/bootstrap-icons.css') }}">
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/assets/css/style.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/lib/jquery-timepicker/jquery.timepicker.min.css') }}">
 
+    <!-- jQuery -->
     <script src="{{ asset('theme/admin-dashbyte/dist/lib/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/jquery-timepicker/jquery.timepicker.min.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/jqueryui/jquery-ui.min.js') }}"></script>
 
     <style>
-        .card {
-
-            transition: transform 0.3s ease;
-            /* Efek transisi untuk memperbesar */
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
         }
-
-        .card:hover {
-            transform: scale(1.1);
-            /* Memperbesar card saat hover */
+        
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 300;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 30px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .portal-header {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        
+        .portal-title {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        
+        .portal-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+        
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            padding: 0 20px;
+        }
+        
+        .card-module {
+            width: 280px;
+            height: 200px;
+            transition: all 0.4s ease;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 25px;
+        }
+        
+        .card-module:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+        
+        .card-file-icon {
+            height: 120px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-file-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+        }
+        
+        .card-file-icon.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-file-icon.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .card-file-icon img {
+            max-height: 70px;
+            max-width: 70px;
+            object-fit: contain;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card-body {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .card-body b {
+            font-size: 0.85rem;
+            line-height: 1.3;
+            display: block;
+            color: #333;
+        }
+        
+        .text-decoration-none:hover .card-body b {
+            color: #667eea !important;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .card-module:nth-child(odd) {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .card-module:nth-child(even) {
+            animation: float 6s ease-in-out infinite 3s;
+        }
+        
+        @media (max-width: 1200px) {
+            .card-module {
+                width: 250px;
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .portal-title {
+                font-size: 2rem;
+            }
+            
+            .card-module {
+                width: 220px;
+                height: 160px;
+            }
+            
+            .cards-container {
+                gap: 15px;
+                padding: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card-module {
+                width: 280px;
+                height: 140px;
+            }
+            
+            .cards-container {
+                gap: 10px;
+            }
         }
     </style>
 
@@ -49,311 +245,83 @@
 </head>
 
 <body>
-
-    <div class="container mt-5">
-        <div class="row g-1 g-sm-2 g-xl-3 mb-5 ">
-
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            {{-- <i class="ri-links-line"></i> --}}
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo.png') }}" alt="logo"
-                                style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center text-dark">
-                            <b class="text-uppercase">WEBSITE DPR RI</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://setjen.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">WEBSITE
-                                SETJEN DPR RI</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-
-                <a href="{{ asset('/setjen') }}" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon success">
-                            {{-- <i class="ri-links-line"></i> --}}
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center text-dark">
-                            <b class="text-uppercase">ADMIN WEBSITE
-                                SETJEN DPR RI</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="{{ asset('/sileg') }}" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon success">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">SILEG</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="{{ asset('logo/logo.png') }}" alt="DPR RI Logo" class="loading-logo">
+        <div class="spinner"></div>
+        <div class="loading-text">
+            Memuat ePerformance Portal<br>
+            <small>Dewan Perwakilan Rakyat Republik Indonesia</small>
         </div>
-        <!-- row -->
-        <div class="row g-1 g-sm-2 g-xl-3 mb-5 ">
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://puuekkukesra.dpr.go.id" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">Website
-                                Pusat PUU Ekkuinbangkesra</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://pa3kn.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">Website Pusat
-                                Analisis Anggaran dan Akuntabilitas Keuangan Negara</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://pusaka.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">Website
-                                Pusat Analisis Keparlemenan</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://puspanlakuu.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center ">
-                            <b class="text-uppercase text-dark">Website Pusat PANLAK UU</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
+    </div>
 
+    <div class="portal-header">
+        <div class="container">
+            <h1 class="portal-title">ePerformance Portal</h1>
+            <p class="portal-subtitle">Sistem Terintegrasi Dewan Perwakilan Rakyat Republik Indonesia</p>
         </div>
-        <!-- row -->
-        <!-- row -->
-        <div class="row g-1 g-sm-2 g-xl-3 mb-5 ">
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://ittama.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center"><b class="text-uppercase text-dark">Website
-                                Ittama</b>
-                        </div>
+    </div>
+
+    <div class="container">
+        <div class="cards-container">
+            
+           
+            
+            <a href="{{ asset('/setjen') }}" class="text-decoration-none">
+                <div class="card-module">
+                    <div class="card-file-icon success">
+                        <img src="{{ asset('logo/logo-setjen-dpr.png') }}" alt="logo">
                     </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://pusdiklat.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">Website Pusdiklat</b>
-                        </div>
+                    <div class="card-body">
+                        <b class="text-uppercase">ADMIN WEB SETJEN</b>
                     </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://akd.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon success">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">SIAKD</b>
-                        </div>
+                </div>
+            </a>
+            
+            <a href="{{ asset('/sileg') }}" class="text-decoration-none">
+                <div class="card-module">
+                    <div class="card-file-icon primary">
+                        <img src="{{ asset('logo/logo-setjen-dpr.png') }}" alt="logo">
                     </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://bksap.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon success">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">BKSAP</b>
-                        </div>
+                    <div class="card-body">
+                        <b class="text-uppercase">SILEG</b>
                     </div>
-                </a>
-            </div>
+                </div>
+            </a>
+            
+            <a href="https://eperformance.dpr.go.id/magang-pustekinfo/admin" class="text-decoration-none">
+                <div class="card-module">
+                    <div class="card-file-icon primary">
+                        <img src="{{ asset('logo/logo-pustekinfo.png') }}" alt="logo" style="max-height: 200px; max-width: 200px;">
+                    </div>
+                    <div class="card-body">
+                        <b class="text-uppercase">PUSTEKINFO INTERNSHIP</b>
+                    </div>
+                </div>
+            </a>
+            
         </div>
-        <!-- row -->
-        <!-- row -->
-        <div class="row g-1 g-sm-2 g-xl-3 mb-5 ">
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-                <a href="https://puupolhukham.dpr.go.id/" class="text-decoration-none">
-                    <div class="card card-file ">
-                        <div class="card-file-icon primary">
-                            <img src="{{ asset('theme/admin-dashbyte/dist/assets/img/logo-setjen-dpr.png') }}"
-                                alt="logo" style="max-height: 80px;">
-                        </div>
-                        <div class="card-body text-center">
-                            <b class="text-uppercase text-dark">Website Pusat PUU Polhukham</b>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-
-            </div>
-            <div class="col-3 col-sm-4 col-md-3 col-xl ">
-
-            </div>
-        </div>
-        <!-- row -->
-
-
     </div>
 
 
+    <!-- Bootstrap JS -->
     <script src="{{ asset('theme/admin-dashbyte/dist/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/assets/js/script.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/assets/js/db.storage.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/chart.js/chart.min.js') }}"></script>
-
-
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/prismjs/prism.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/colorpicker/spectrum.js') }}"></script>
-    <script src="{{ asset('theme/admin-dashbyte/dist/lib/quill/quill.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Loading Screen Script -->
+    <script>
+        $(document).ready(function() {
+            // Hide loading screen after page is fully loaded
+            $(window).on('load', function() {
+                setTimeout(function() {
+                    $('#loadingScreen').addClass('fade-out');
+                    setTimeout(function() {
+                        $('#loadingScreen').remove();
+                    }, 500);
+                }, 800); // Delay 800ms to show loading animation
+            });
+        });
+    </script>
 
 </body>
 
 </html>
-
-
-
-{{-- <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>E-Performance</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  </head>
-  <body class="bg-light">
-    <h1 class="text-center text-bg-success p-3">Cluster E-Performance</h1>
-    <div class="container text-center">
-        <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/sileg') }}" class="btn btn-success">SILEG</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/akd') }}" class="btn btn-success">AKD</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/pusaka') }}" class="btn btn-success">PUSAKA</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/puspanlakuu') }}" class="btn btn-success">PUSPANLAKUU</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/puuekkukesra') }}" class="btn btn-success">PUUEKKUKESRA</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/puupolhukham') }}" class="btn btn-success">PUUPOLHUKHAM</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/pa3kn') }}" class="btn btn-success">PA3KN</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/setjenadmin') }}" class="btn btn-success">SETJENADMIN</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/aladin') }}" class="btn btn-success">ALADIN</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/siterang') }}" class="btn btn-success">SITERANG</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/ittama') }}" class="btn btn-success">ITTAMA</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-3">
-                <a href="{{ asset('/pusdiklat') }}" class="btn btn-success">PUSDIKLAT</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
-</html> --}}
