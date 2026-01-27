@@ -40,8 +40,8 @@ if ($status) {
 
 <div class="card ">
     <div class="card-body">
-        <div class="table-responsive">
-            <table id="datatable" class="table table-striped table-bordered" style="visibility: hidden;">
+        <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+            <table id="datatable" class="table table-striped table-bordered" style="visibility: hidden; min-width: 1200px;">
                 <thead>
                     <tr>
                         <th scope="col" class="p-1 text-center" style="width: 5%;">No</th>
