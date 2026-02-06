@@ -1100,16 +1100,6 @@
             });
             
             if (valid) {
-                // Skip Step 2 if Hub is selected
-                const jenisMagang = $('input[name="jenis_magang"]:checked').val();
-                if (currentStep === 1 && jenisMagang === 'Hub') {
-                    nextStep = 3;
-                    // Remove required from Step 2 fields
-                    $('#tingkat_pendidikan, #nama_sekolah, #jurusan').removeAttr('required');
-                } else if (currentStep === 1 && jenisMagang === 'Mandiri') {
-                    // Add required back to Step 2 fields
-                    $('#tingkat_pendidikan, #nama_sekolah, #jurusan').attr('required', 'required');
-                }
                 goToStep(nextStep);
             }
         });
@@ -1117,12 +1107,6 @@
         // Back button
         $(document).on('click', '.btn-back', function() {
             let prevStep = $(this).data('prev');
-            
-            // Skip Step 2 if Hub is selected when going back
-            const jenisMagang = $('input[name="jenis_magang"]:checked').val();
-            if (currentStep === 3 && jenisMagang === 'Hub') {
-                prevStep = 1;
-            }
             goToStep(prevStep);
         });
         
