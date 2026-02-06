@@ -22,8 +22,55 @@
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('theme/admin-dashbyte/dist/assets/css/style.min.css') }}">
 
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="{{ asset('logo/logo.png') }}" as="image" type="image/png">
+    <link rel="preload" href="{{ asset('logo/logo-setjen-dpr.png') }}" as="image" type="image/png">
+    <link rel="preload" href="{{ asset('logo/logo-pustekinfo.png') }}" as="image" type="image/png">
+    <link rel="preload" href="{{ asset('theme/admin-dashbyte/dist/lib/jquery/jquery.min.js') }}" as="script">
+    <link rel="preload" href="{{ asset('theme/admin-dashbyte/dist/lib/bootstrap/js/bootstrap.bundle.min.js') }}" as="script">
+
     <!-- jQuery -->
     <script src="{{ asset('theme/admin-dashbyte/dist/lib/jquery/jquery.min.js') }}"></script>
+    
+    <!-- Preload Critical Images -->
+    <script>
+        // Preload critical images
+        function preloadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => {
+                    console.warn('Failed to preload image:', src);
+                    resolve(null); // Don't reject, just resolve with null
+                };
+                img.src = src;
+                // Set timeout for each image
+                setTimeout(() => {
+                    if (img.complete === false) {
+                        console.warn('Image preload timeout:', src);
+                        resolve(null);
+                    }
+                }, 5000);
+            });
+        }
+        
+        // Preload images when DOM is ready
+        $(document).ready(function() {
+            const imagesToPreload = [
+                "{{ asset('logo/logo.png') }}",
+                "{{ asset('logo/logo-setjen-dpr.png') }}",
+                "{{ asset('logo/logo-pustekinfo.png') }}"
+            ];
+            
+            Promise.all(imagesToPreload.map(src => preloadImage(src)))
+                .then(() => {
+                    console.log('Image preloading completed');
+                })
+                .catch(err => {
+                    console.warn('Some images failed to preload:', err);
+                });
+        });
+    </script>
 
     <style>
         /* Loading Screen */
@@ -165,6 +212,9 @@
             object-fit: contain;
             position: relative;
             z-index: 2;
+            /* Improve image loading performance */
+            loading: eager;
+            decoding: async;
         }
         
         .card-body {
@@ -247,7 +297,7 @@
 <body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <img src="{{ asset('logo/logo.png') }}" alt="DPR RI Logo" class="loading-logo">
+        <img src="{{ asset('logo/logo.png') }}" alt="DPR RI Logo" class="loading-logo" loading="eager" onerror="console.log('Loading logo failed to load')">
         <div class="spinner"></div>
         <div class="loading-text">
             Memuat ePerformance Portal<br>
@@ -270,7 +320,7 @@
             <a href="{{ asset('/setjen') }}" class="text-decoration-none">
                 <div class="card-module">
                     <div class="card-file-icon success">
-                        <img src="{{ asset('logo/logo-setjen-dpr.png') }}" alt="logo">
+                        <img src="{{ asset('logo/logo-setjen-dpr.png') }}" alt="logo" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <div class="card-body">
                         <b class="text-uppercase">ADMIN WEB SETJEN</b>
@@ -281,7 +331,7 @@
             <a href="{{ asset('/sileg') }}" class="text-decoration-none">
                 <div class="card-module">
                     <div class="card-file-icon primary">
-                        <img src="{{ asset('logo/logo-setjen-dpr.png') }}" alt="logo">
+                        <img src="{{ asset('logo/logo-setjen-dpr.png') }}" alt="logo" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <div class="card-body">
                         <b class="text-uppercase">SILEG</b>
@@ -292,7 +342,7 @@
             <a href="https://eperformance.dpr.go.id/magang-pustekinfo/admin" class="text-decoration-none">
                 <div class="card-module">
                     <div class="card-file-icon primary">
-                        <img src="{{ asset('logo/logo-pustekinfo.png') }}" alt="logo" style="max-height: 200px; max-width: 200px;">
+                        <img src="{{ asset('logo/logo-pustekinfo.png') }}" alt="logo" style="max-height: 200px; max-width: 200px;" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <div class="card-body">
                         <b class="text-uppercase">PUSTEKINFO INTERNSHIP</b>
@@ -310,14 +360,47 @@
     <!-- Loading Screen Script -->
     <script>
         $(document).ready(function() {
+            let loadingComplete = false;
+            
+            // Function to hide loading screen
+            function hideLoadingScreen() {
+                if (!loadingComplete) {
+                    loadingComplete = true;
+                    setTimeout(function() {
+                        $('#loadingScreen').addClass('fade-out');
+                        setTimeout(function() {
+                            $('#loadingScreen').remove();
+                        }, 500);
+                    }, 800); // Delay 800ms to show loading animation
+                }
+            }
+            
             // Hide loading screen after page is fully loaded
             $(window).on('load', function() {
-                setTimeout(function() {
-                    $('#loadingScreen').addClass('fade-out');
-                    setTimeout(function() {
-                        $('#loadingScreen').remove();
-                    }, 500);
-                }, 800); // Delay 800ms to show loading animation
+                hideLoadingScreen();
+            });
+            
+            // Fallback timeout - hide loading screen after maximum wait time
+            setTimeout(function() {
+                if (!loadingComplete) {
+                    console.log('Loading timeout reached, hiding loading screen');
+                    hideLoadingScreen();
+                }
+            }, 10000); // 10 seconds maximum wait
+            
+            // Also hide loading screen if critical content is ready
+            setTimeout(function() {
+                if (!loadingComplete && $('.cards-container').length > 0) {
+                    console.log('Content ready, hiding loading screen');
+                    hideLoadingScreen();
+                }
+            }, 3000); // 3 seconds for content check
+            
+            // Handle image loading errors
+            $('img').on('error', function() {
+                console.log('Image failed to load:', $(this).attr('src'));
+                // Replace with placeholder or default image
+                $(this).attr('src', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEMyMiAyMCAyMiAxOCAyMCAxOEMxOCAxOCAxOCAyMCAyMCAyMFoiIGZpbGw9IiM5Q0E1QjMiLz4KPC9zdmc+');
             });
         });
     </script>

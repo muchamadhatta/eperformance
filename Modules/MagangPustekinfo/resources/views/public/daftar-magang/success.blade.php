@@ -22,6 +22,15 @@
                 <p>Data peserta magang telah berhasil disimpan ke dalam sistem PUSTEKINFO.</p>
             </div>
             
+            <!-- Social Media -->
+            <div class="social-media-section">
+                <div class="social-text">Ikuti media sosial kami untuk informasi terbaru</div>
+                <a href="https://www.instagram.com/pustekinfo.dprri/" target="_blank" class="social-link">
+                    <i class="ri-instagram-line"></i>
+                    <span>@pustekinfo.dprri</span>
+                </a>
+            </div>
+            
             <!-- Action Buttons -->
             <div class="success-actions">
                 <a href="{{ route('magangpustekinfo.daftar_magang.index') }}" class="btn-add-more">
@@ -126,6 +135,10 @@
     /* Action Buttons */
     .success-actions {
         margin-bottom: 2rem;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     .btn-add-more {
@@ -151,6 +164,52 @@
     
     .btn-add-more i {
         font-size: 1.25rem;
+    }
+    
+    /* Social Media Section */
+    .social-media-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 16px;
+        border: 1px solid #dee2e6;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .social-text {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+    
+    .social-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #E1306C, #C13584);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(225, 48, 108, 0.25);
+    }
+    
+    .social-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(225, 48, 108, 0.35);
+        color: white;
+    }
+    
+    .social-link i {
+        font-size: 1.1rem;
     }
     
     /* Footer Info */
